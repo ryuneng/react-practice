@@ -25,13 +25,13 @@ public class PageResponseDTO<E> {
 
         this.dtoList = dtoList;
         this.pageRequestDTO = pageRequestDTO;
-        this.totalCount = (int)totalCount;
+        this.totalCount = (int) totalCount;
 
-        int end = (int)(Math.ceil(pageRequestDTO.getPage() / 10.0)) * 10;
+        int end = (int) (Math.ceil(pageRequestDTO.getPage() / 10.0)) * 10;
 
         int start = end - 9;
 
-        int last = (int)(Math.ceil(totalCount/(double)pageRequestDTO.getSize()));
+        int last = (int) (Math.ceil(totalCount / (double) pageRequestDTO.getSize()));
 
         end = end > last ? last : end;
 
@@ -39,7 +39,7 @@ public class PageResponseDTO<E> {
 
         this.next = totalCount > end * pageRequestDTO.getSize();
 
-        this.pageNumList = IntStream.rangeClosed(start,end).boxed().collect(Collectors.toList());
+        this.pageNumList = IntStream.rangeClosed(start, end).boxed().collect(Collectors.toList());
 
         if (prev) {
             this.prevPage = start - 1;

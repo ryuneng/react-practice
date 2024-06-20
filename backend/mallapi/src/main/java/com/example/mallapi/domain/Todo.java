@@ -21,7 +21,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Todo {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // MariaDB의 auto_increment 방식으로 PK 생성 처리
     private Long tno;
@@ -42,7 +42,7 @@ public class Todo {
         this.complete = complete;
     }
 
-    public void changeDueDate(LocalDate duDate) {
+    public void changeDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 }
