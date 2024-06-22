@@ -72,4 +72,9 @@ public class Product {
         this.imageList.clear();
     }
 
+    // 실제 delete 대신 deleteYn등의 컬럼 update를 이용해서 논리적인 삭제 처리 (Soft Delete)
+    public void changeDel(boolean delFlag) {
+        this.delFlag = delFlag;
+    }
+
 }
