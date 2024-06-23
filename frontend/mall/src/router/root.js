@@ -1,5 +1,6 @@
 import { Suspense, lazy } from "react";
 import todoRouter from "./todoRouter"; // '/todo/'와 관련된 children 설정을 담고 있는 라우팅 설정은 todoRouter를 호출하도록 설정
+import productsRouter from "./productsRouter";
 
 // root.js : createBrowserRouter()를 통해 어떤 경로(path)에는 어떤 컴포넌트를 보여줄 것인지를 결정하는 역할을 함
 const { createBrowserRouter } = require("react-router-dom");
@@ -12,6 +13,8 @@ const Main = lazy(() => import("../pages/MainPage"))
 const About = lazy(() => import("../pages/AboutPage"))
 
 const TodoIndex = lazy(() => import("../pages/todo/IndexPage"))
+
+const ProductsIndex = lazy(() => import("../pages/products/IndexPage"))
 
 // <Suspense>와 lazy()는 필요한 순간까지 컴포넌트를 메모리상으로 올리지 않도록 지연로딩을 위해서 사용
 /* SPA 방식의 리액트 애플리케이션은 처음에 필요한 모든 컴포넌트를 로딩하기 때문에 초기 실행 시간이 오래 걸리는 단점이 있음.
@@ -31,6 +34,11 @@ const root = createBrowserRouter([
         path: "todo",
         element: <Suspense fallback={Loading}><TodoIndex/></Suspense>,
         children: todoRouter() // '/todo/'와 경로와 관련된 설정은 todoRouter()를 이용하도록 설정
+    },
+    {
+        path: "products",
+        element: <Suspense fallback={Loading}><ProductsIndex/></Suspense>,
+        children: productsRouter()
     }
 ])
 

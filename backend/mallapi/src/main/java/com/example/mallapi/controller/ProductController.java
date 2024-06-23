@@ -49,7 +49,14 @@ public class ProductController {
         // 서비스 호출
         Long pno = productService.register(productDTO);
 
-        return Map.of("RESULT", pno);
+        // try {
+        // Thread.sleep(2000);
+        // } catch (InterruptedException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
+
+        return Map.of("result", pno);
     }
 
     @GetMapping("/view/{fileName}")
