@@ -7,22 +7,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.example.mallapi.controller.formatter.LocalDateFormatter;
 
 @Configuration
-public class CustomServletConfig implements WebMvcConfigurer {
+public class CustomServletConfig implements WebMvcConfigurer { // 스프링 시큐리티와 관련된 설정을 위한 클래스
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
 
         registry.addFormatter(new LocalDateFormatter());
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .maxAge(300)
-                .allowedHeaders("Authorization", "Cache-Control", "Content-Type");
     }
 
 }
