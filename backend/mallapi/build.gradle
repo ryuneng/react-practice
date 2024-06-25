@@ -48,6 +48,11 @@ dependencies {
 	
 	// Gson 라이브러리 (API 서버 로그인 후 JSON 문자열을 생성해서 전달, 이 때 Gson 라이브러리를 활용해 객체를 JSON 문자열로 처리)
 	implementation 'com.google.code.gson:gson:2.10.1'
+	
+	// JWT 구성
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 }
 
 tasks.named('test') {

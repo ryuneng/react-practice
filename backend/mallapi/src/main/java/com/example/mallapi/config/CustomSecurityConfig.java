@@ -4,17 +4,21 @@ import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.example.mallapi.security.filter.JWTCheckFilter;
 import com.example.mallapi.security.handler.APILoginFailHandler;
 import com.example.mallapi.security.handler.APILoginSuccessHandler;
+import com.example.mallapi.security.handler.CustomAccessDeniedHandler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +26,7 @@ import lombok.extern.log4j.Log4j2;
 @Configuration
 @Log4j2
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class CustomSecurityConfig {
 
     @Bean
@@ -45,6 +50,13 @@ public class CustomSecurityConfig {
             config.loginPage("/api/member/login");
             config.successHandler(new APILoginSuccessHandler()); // 로그인 후 처리를 APILoginSuccessHandler로 설정
             config.failureHandler(new APILoginFailHandler()); // 로그인 실패 처리 시 설정
+        });
+
+        http.addFilterBefore(new JWTCheckFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 체크
+
+        // 유효시간이 지나지 않았지만 권한이 없는 사용자가 가진 Access Token을 사용하는 경우, ACCESSDENIED 에러메시지 전송
+        http.exceptionHandling(config -> {
+            config.accessDeniedHandler(new CustomAccessDeniedHandler());
         });
 
         return http.build();
