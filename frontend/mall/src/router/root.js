@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import todoRouter from "./todoRouter"; // '/todo/'와 관련된 children 설정을 담고 있는 라우팅 설정은 todoRouter를 호출하도록 설정
 import productsRouter from "./productsRouter";
+import memberRouter from "./memberRouter";
 
 // root.js : createBrowserRouter()를 통해 어떤 경로(path)에는 어떤 컴포넌트를 보여줄 것인지를 결정하는 역할을 함
 const { createBrowserRouter } = require("react-router-dom");
@@ -39,6 +40,10 @@ const root = createBrowserRouter([
         path: "products",
         element: <Suspense fallback={Loading}><ProductsIndex/></Suspense>,
         children: productsRouter()
+    },
+    {
+        path: "member",
+        children: memberRouter()
     }
 ])
 

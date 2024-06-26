@@ -99,7 +99,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             printWriter.close();
         }
 
-        filterChain.doFilter(request, response); // 통과
+        // filterChain.doFilter(request, response); // 통과
 
     }
 
