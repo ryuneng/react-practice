@@ -4,7 +4,7 @@ import { API_SERVER_HOST } from "../api/todoApi";
 
 const jwtAxios = axios.create()
 
-// Refresh Token을 이용한 자동 갱신
+// Refresh Token을 이용한 자동 갱신 (Silent Refresh)
 const refreshJWT = async (accessToken, refreshToken) => {
 
     const host = API_SERVER_HOST
