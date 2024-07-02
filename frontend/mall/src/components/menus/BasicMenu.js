@@ -1,8 +1,12 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import useCustomLogin from "../../hooks/UseCustomLogin";
 
 const BasicMenu = () => {
-    const loginState = useSelector(state => state.loginSlice)
+    // *** 주석 처리 : 리코일 사용 전
+    // const loginState = useSelector(state => state.loginSlice)
+    
+    const {loginState} = useCustomLogin()
     
     return (
         <nav id="navbar" className=" flex bg-blue-300">

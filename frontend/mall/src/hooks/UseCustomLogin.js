@@ -1,27 +1,58 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, createSearchParams, useNavigate } from "react-router-dom";
 import { loginPostAsync, logout } from "../slices/loginSlice";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import signinState from "../atoms/signinState";
+import { loginPost } from "../api/memberApi";
+import { removeCookie, setCookie } from "../util/cookieUtil";
+import { cartState } from "../atoms/cartState";
 
 const useCustomLogin = () => {
 
     const navigate = useNavigate()
+    
+    const [loginState, setLoginState] = useRecoilState(signinState)
 
-    const dispatch = useDispatch()
+    const resetState = useResetRecoilState(signinState)
 
-    const loginState = useSelector(state => state.loginSlice) // --------로그인 상태
+    const resetCartState = useResetRecoilState(cartState) // 로그아웃 시 장바구니 비우기
+
+    // *** 주석 처리 : 리코일 사용 전
+    // const dispatch = useDispatch()
+
+    // const loginState = useSelector(state => state.loginSlice) // --------로그인 상태
 
     const isLogin = loginState.email ? true : false // --------로그인 여부
 
     const doLogin = async (loginParam) => { // --------로그인 함수
 
-        const action = await dispatch(loginPostAsync(loginParam))
+        const result = await loginPost(loginParam)
 
-        return action.payload
+        console.log(result)
+        
+        saveAsCookie(result)
+
+        return result
+
+        // const action = await dispatch(loginPostAsync(loginParam))
+
+        // return action.payload
+    }
+
+    const saveAsCookie = (data) => {
+
+        setCookie("member", JSON.stringify(data), 1) // 1일
+
+        setLoginState(data)
     }
 
     const doLogout = () => { // --------로그아웃 함수
 
-        dispatch(logout())
+        removeCookie('member')
+        resetState()
+        resetCartState()
+
+        // dispatch(logout())
     }
 
     const moveToPath = (path) => { // --------페이지 이동
@@ -59,7 +90,8 @@ const useCustomLogin = () => {
         }
     }
 
-    return {loginState, isLogin, doLogin, doLogout, moveToPath, moveToLogin, moveToLoginReturn, exceptionHandle}
+    return {loginState, isLogin, doLogin, doLogout, saveAsCookie,
+            moveToPath, moveToLogin, moveToLoginReturn, exceptionHandle}
 }
 
 export default useCustomLogin

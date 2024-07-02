@@ -16,9 +16,9 @@ const LoginComponent = () => {
 
     const {doLogin, moveToPath} = useCustomLogin()
 
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
     const handleChange = (e) => {
         loginParam[e.target.name] = e.target.value

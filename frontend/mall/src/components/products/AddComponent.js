@@ -3,6 +3,7 @@ import { postAdd } from "../../api/productsApi";
 import FetchingModal from "../common/FetchingModal";
 import ResultModal from "../common/ResultModal";
 import useCustomMove from "../../hooks/useCustomMove";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const initState = {
     pname: '',
@@ -19,25 +20,29 @@ const AddComponent = () => {
      // 리액트의 컴포넌트는 태그의 id 속성을 활용하면 나중에 동일한 컴포넌트를 여러 번 사용해서 화면에 문제가 생기기 때문에 useRef()를 이용해서 처리
     const uploadRef = useRef()
 
-    // for FetchingModal
-    const [fetching, setFetching] = useState(false)
-
-    // for ResultModal
-    const [result, setResult] = useState(null)
-
     const {moveToList} = useCustomMove() // 이동을 위한 함수
+    
+    // *** 주석 처리 : 리액트 쿼리 사용 전
+    // // for FetchingModal
+    // const [fetching, setFetching] = useState(false)
 
+    // // for ResultModal
+    // const [result, setResult] = useState(null)
+
+    // 입력값 처리
     const handleChangeProduct = (e) => {
         product[e.target.name] = e.target.value
         setProduct({...product})
     }
+
+    // useMutation() : 파라미터로 서버를 호출하는 함수를 전달하고, mutate()를 이용해서 처리 결과에 대한 다양한 정보 획득
+    const addMutation = useMutation((product) => postAdd(product))
 
     const handleClickAdd = (e) => {
 
         // useRef를 이용할 때는 current라는 속성을 활용해 현재 DOM 객체를 참조하게 되고,
         // Ajax를 전송할 때는 FormData 객체를 통해 모든 내용을 담아서 전송하게 됨
         const files = uploadRef.current.files
-        
         const formData = new FormData()
         
         for (let i = 0; i < files.length; i++) {
@@ -48,19 +53,25 @@ const AddComponent = () => {
         formData.append("pname", product.pname)
         formData.append("pdesc", product.pdesc)
         formData.append("price", product.price)
+        
+        addMutation.mutate(formData) // 리액트 쿼리
 
-        console.log(formData)
+        // console.log(formData)
 
-        setFetching(true) // API 서버 호출할 때는 fetching 상태를 true로 설정
+        // setFetching(true) // API 서버 호출할 때는 fetching 상태를 true로 설정
 
-        postAdd(formData).then(data => {
-            setFetching(false) // 데이터를 가져온 후에는 false로 변경해서 화면에서 사라지도록 설정
-            setResult(data.result)
-        })
+        // postAdd(formData).then(data => {
+        //     setFetching(false) // 데이터를 가져온 후에는 false로 변경해서 화면에서 사라지도록 설정
+        //     setResult(data.result)
+        // })
     }
 
+    const queryClient = useQueryClient()
+
     const closeModal = () => { // ResultModal 종료
-        setResult(null)
+        // setResult(null)
+
+        queryClient.invalidateQueries("products/list")
         
         moveToList({pgae:1}) // 모달 창이 닫히면 이동
     }
@@ -68,12 +79,19 @@ const AddComponent = () => {
     return (
         <div className="border-2 border-sky-200 mt-10 m-2 p-4">
 
-            {fetching ? <FetchingModal/> : <></>}
+            {addMutation.isLoading ? <FetchingModal/> : <></>}
+
+            {addMutation.isSuccess ? <ResultModal title={'Add Result'}
+                                                  content={`Add Success ${addMutation.data.result}`}
+                                                  callbackFn={closeModal}/>
+            : <></>}
+
+            {/* {fetching ? <FetchingModal/> : <></>}
 
             {result ? <ResultModal title={'Product Add Result'}
                                    content={`${result}번 등록 완료`}
                                    callbackFn={closeModal}/>
-                    : <></>}
+                    : <></>} */}
 
             <div className="flex justify-center">
                 <div className="relative mb-4 flex w-full flex-wrap items-stretch">

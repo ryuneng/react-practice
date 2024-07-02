@@ -9,10 +9,13 @@ const KakaoRedirectPage = () => {
 
     const [searchParams] = useSearchParams()
     
-    const {moveToPath} = useCustomLogin()
+    // *** 주석 처리 : 리코일 사용 전
+    // const {moveToPath} = useCustomLogin()
 
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
     
+    const {moveToPath, saveAsCookie} = useCustomLogin()
+
     const authCode = searchParams.get("code")
 
     useEffect(() => {
@@ -27,8 +30,9 @@ const KakaoRedirectPage = () => {
                 console.log(memberInfo)
 
                 // API 서버에서 전송한 결과를 dispatch()를 이용해서 login() 호출
-                dispatch(login(memberInfo))
-
+                // dispatch(login(memberInfo))
+                
+                saveAsCookie(memberInfo)
                 if (memberInfo && !memberInfo.social) { // 소셜 회원이 아니라면 홈으로 이동
                     moveToPath("/")
                 } else {

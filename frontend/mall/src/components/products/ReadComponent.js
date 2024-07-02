@@ -5,6 +5,7 @@ import useCustomMove from "../../hooks/useCustomMove";
 import FetchingModal from "../common/FetchingModal";
 import useCustomLogin from "../../hooks/UseCustomLogin";
 import useCustomCart from "../../hooks/UseCustomCart";
+import { useQuery } from "@tanstack/react-query";
 
 const initState = {
     pno: 0,
@@ -18,19 +19,35 @@ const host = API_SERVER_HOST
 
 const ReadComponent = ({pno}) => {
 
-    const [product, setProduct] = useState(initState)
+    // *** 주석 처리 : 리액트 쿼리 사용 전
+    // const [product, setProduct] = useState(initState)
     
     // 화면 이동용 함수
     const {moveToList, moveToModify} = useCustomMove()
 
-    // fetching
-    const [fetching, setFetching] = useState(false)
-
-    // 장바구니 기능
-    const {changeCart, cartItems} = useCustomCart()
-
-    // 로그인 정보
     const {loginState} = useCustomLogin()
+
+    const {cartItems, changeCart} = useCustomCart()
+
+    // isFetching : 서버와 비동기 통신 중인지 확인 가능, data는 서버에서 처리된 결과 데이터
+    // - 별도의 useState() 없이 FetchingModal 표시 가능
+    const {isFetching, data} = useQuery(
+        ['products', pno],
+        () => getOne(pno),
+        {
+            staleTime: 1000 * 10,
+            retry: 1
+        }
+    )
+
+    // // fetching
+    // const [fetching, setFetching] = useState(false)
+
+    // // 장바구니 기능
+    // const {changeCart, cartItems} = useCustomCart()
+
+    // // 로그인 정보
+    // const {loginState} = useCustomLogin()
 
     const handleClickAddCart = () => {
 
@@ -48,20 +65,23 @@ const ReadComponent = ({pno}) => {
         changeCart({email: loginState.email, pno:pno, qty:qty})
     }
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        setFetching(true)
+    //     setFetching(true)
 
-        getOne(pno).then(data => {
-            setProduct(data)
-            setFetching(false)
-        })
-    }, [pno])
+    //     getOne(pno).then(data => {
+    //         setProduct(data)
+    //         setFetching(false)
+    //     })
+    // }, [pno])
+
+    const product = data || initState
 
     return (
         <div className="border-2 border-sky-200 mt-10 m-2 p-4">
 
-            {fetching ? <FetchingModal/> : <></>}
+            {/* {fetching ? <FetchingModal/> : <></>} */} {/* 리액트 쿼리 사용 전 */}
+            {isFetching ? <FetchingModal/> : <></>}
 
             <div className="flex justify-center mt-10">
                 <div className="relative mb-4 flex w-full flex-wrap items-stretch">

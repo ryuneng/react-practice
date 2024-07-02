@@ -2,31 +2,38 @@ import { useEffect, useMemo } from "react";
 import useCustomLogin from "../../hooks/UseCustomLogin";
 import useCustomCart from "../../hooks/UseCustomCart";
 import CartItemComponent from "../cart/CartItemComponent";
+import { useRecoilValue } from "recoil";
+import { cartTotalState } from "../../atoms/cartState";
 
 const CartComponent = () => {
 
-    const {isLogin, loginState} = useCustomLogin();
+    const {isLogin, loginState} = useCustomLogin()
 
-    const {refreshCart, cartItems, changeCart} = useCustomCart();
+    // *** 주석 처리 : 리액트 쿼리, 리코일 사용 전
+    // const {refreshCart, cartItems, changeCart} = useCustomCart()
 
-    const total = useMemo(() => {
+    // const total = useMemo(() => {
 
-        let total = 0
+    //     let total = 0
 
-        for (const item of cartItems) {
-            total += item.price * item.qty
-        }
+    //     for (const item of cartItems) {
+    //         total += item.price * item.qty
+    //     }
 
-        return total
-    }, [cartItems])
+    //     return total
+    // }, [cartItems])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (isLogin) {
+    //     if (isLogin) {
 
-            refreshCart()
-        }
-    }, [isLogin])
+    //         refreshCart()
+    //     }
+    // }, [isLogin])
+
+    const {cartItems, changeCart} = useCustomCart()
+
+    const totalValue = useRecoilValue(cartTotalState)
 
     return (
         <div className="w-full">
@@ -53,7 +60,7 @@ const CartComponent = () => {
                 </div>
 
                 <div className="text-2xl text-right font-extrabold">
-                    TOTAL: {total} 원
+                    TOTAL: {totalValue} 원
                 </div>
                 
             </div>
